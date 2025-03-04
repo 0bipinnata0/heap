@@ -1,6 +1,6 @@
 {
   "name": "@0bipinnata0/heap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A TypeScript implementation of a min heap data structure",
   "type": "module",
   "publishConfig": {
@@ -31,7 +31,7 @@
     "data-structure",
     "typescript"
   ],
-  "author": "",
+  "author": "0bipinnata0",
   "license": "MIT",
   "packageManager": "pnpm@10.4.1",
   "devDependencies": {

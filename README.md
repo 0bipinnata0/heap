@@ -1,6 +1,6 @@
 # @0bipinnata0/heap
 
-A TypeScript implementation of a min heap data structure that supports both ESM and CommonJS.
+A high-performance TypeScript implementation of a min heap data structure that supports both ESM and CommonJS. This implementation is optimized for handling large datasets and provides stable ordering for elements with equal priorities.
 
 ## Installation
 
@@ -8,70 +8,93 @@ A TypeScript implementation of a min heap data structure that supports both ESM 
 pnpm add @0bipinnata0/heap
 ```
 
+## Features
+
+- 🚀 High performance implementation
+- 🔄 Stable ordering for equal priorities
+- 💪 Handles large datasets efficiently
+- 📦 Support for both ESM and CommonJS
+- 🎯 Type-safe with TypeScript
+- 🧪 Comprehensive test coverage
+
 ## Usage
 
 ```typescript
-import { MinHeap } from '@0bipinnata0/heap'
+import { push, pop, peek } from '@0bipinnata0/heap'
 
-// Create a min heap for numbers
-const numberHeap = new MinHeap<number>((a, b) => a - b)
+// Create a min heap array for objects with sortIndex
+const heap: Array<{id: number, sortIndex: number}> = []
 
-// Insert values
-numberHeap.insert(5)
-numberHeap.insert(3)
-numberHeap.insert(7)
-numberHeap.insert(1)
-numberHeap.insert(4)
+// Push elements
+push(heap, { id: 1, sortIndex: 5 })
+push(heap, { id: 2, sortIndex: 3 })
+push(heap, { id: 3, sortIndex: 7 })
+push(heap, { id: 4, sortIndex: 1 })
 
-// Get the minimum value without removing it
-console.log(numberHeap.peek()) // 1
+// Peek at minimum element without removing it
+console.log(peek(heap)) // { id: 4, sortIndex: 1 }
 
-// Extract minimum values in order
-console.log(numberHeap.extractMin()) // 1
-console.log(numberHeap.extractMin()) // 3
-console.log(numberHeap.extractMin()) // 4
-console.log(numberHeap.extractMin()) // 5
-console.log(numberHeap.extractMin()) // 7
-
-// Working with custom objects
-interface Person {
-  name: string
-  age: number
-}
-
-const personHeap = new MinHeap<Person>((a, b) => a.age - b.age)
-
-personHeap.insert({ name: 'Alice', age: 30 })
-personHeap.insert({ name: 'Bob', age: 25 })
-personHeap.insert({ name: 'Charlie', age: 35 })
-
-const youngest = personHeap.extractMin()
-console.log(youngest) // { name: 'Bob', age: 25 }
+// Pop elements in ascending order
+console.log(pop(heap)) // { id: 4, sortIndex: 1 }
+console.log(pop(heap)) // { id: 2, sortIndex: 3 }
+console.log(pop(heap)) // { id: 1, sortIndex: 5 }
+console.log(pop(heap)) // { id: 3, sortIndex: 7 }
 ```
 
 ## API
 
-### Constructor
+### Functions
 
-```typescript
-new MinHeap<T>(compare: (a: T, b: T) => number)
+- `push(heap: T[], value: T): void`
+  - Adds a new element to the heap
+  - Time complexity: O(log n)
+
+- `peek(heap: T[]): T | null`
+  - Returns the minimum element without removing it
+  - Returns null if heap is empty
+  - Time complexity: O(1)
+
+- `pop(heap: T[]): T | null`
+  - Removes and returns the minimum element
+  - Returns null if heap is empty
+  - Time complexity: O(log n)
+
+## Performance Characteristics
+
+- Push operation: O(log n)
+- Pop operation: O(log n)
+- Peek operation: O(1)
+- Space complexity: O(n)
+
+## Edge Cases Handling
+
+- Empty heap operations return null
+- Stable ordering for elements with equal priorities
+- Supports negative priority values
+- Handles very large priority values (up to Number.MAX_SAFE_INTEGER)
+
+## Use Cases
+
+- Priority queues
+- Task scheduling systems
+- Graph algorithms (Dijkstra's, Prim's)
+- Event scheduling
+- Real-time data processing
+
+## Testing
+
+The package includes comprehensive test coverage for:
+- Basic operations (push, pop, peek)
+- Edge cases and boundary conditions
+- Performance with large datasets
+- Stability of ordering
+- Stress testing with random operations
+
+Run tests with:
+```bash
+pnpm test
 ```
-
-Creates a new min heap with a custom comparison function.
-
-### Methods
-
-- `insert(value: T): void` - Insert a new value into the heap
-- `peek(): T | undefined` - Get the minimum value without removing it
-- `extractMin(): T | undefined` - Remove and return the minimum value
-- `clear(): void` - Clear all values from the heap
-- `toArray(): T[]` - Convert the heap to an array
-
-### Properties
-
-- `size: number` - Get the number of elements in the heap
-- `isEmpty: boolean` - Check if the heap is empty
 
 ## License
 
-MIT 
+MIT

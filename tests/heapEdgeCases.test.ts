@@ -87,7 +87,7 @@ describe('MinHeap Edge Cases', () => {
     
     it('should handle a large number of operations', () => {
       const heap: Array<{id: number, sortIndex: number}> = []
-      const operations = 1000 // 减少操作次数，避免测试超时
+      const operations = 5000 // 减少操作次数，避免测试超时
       let inserted = 0
       let extracted = 0
       
