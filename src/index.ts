@@ -1,102 +1,78 @@
-export class MinHeap<T> {
-  private heap: T[] = [];
 
-  constructor(private compare: (a: T, b: T) => number) {}
+type Heap<T extends Node> = Array<T>;
+type Node = {
+  id: number,
+  sortIndex: number,
+};
 
-  /**
-   * Get the size of the heap
-   */
-  get size(): number {
-    return this.heap.length;
+export function peek<T extends Node>(heap: Heap<T>) {
+  if (heap.length > 0) {
+    return heap[0]
   }
+  return null;
+}
 
-  /**
-   * Check if the heap is empty
-   */
-  get isEmpty(): boolean {
-    return this.size === 0;
+export function pop<T extends Node>(heap: Heap<T>): T | null {
+  if (heap.length === 0) {
+    return null;
   }
-
-  /**
-   * Insert a new element into the heap
-   */
-  insert(value: T): void {
-    this.heap.push(value);
-    this.bubbleUp(this.size - 1);
+  const first = heap[0];
+  const last = heap.pop()!;
+  if (first === last) {
+    return first;
   }
+  heap[0] = last;
+  siftDown(heap, last, 0)
+  return first;
+}
 
-  /**
-   * Get the minimum element without removing it
-   */
-  peek(): T | undefined {
-    return this.heap[0];
+function compare<T extends Node>(l: T, r?: T) {
+  if (!r) {
+    return l;
   }
+  return l.sortIndex < r.sortIndex ? l : r
+}
 
-  /**
-   * Remove and return the minimum element
-   */
-  extractMin(): T | undefined {
-    if (this.isEmpty) return undefined;
 
-    const min = this.heap[0];
-    const last = this.heap.pop()!;
-    
-    if (!this.isEmpty) {
-      this.heap[0] = last;
-      this.bubbleDown(0);
-    }
-
-    return min;
+function siftDown<T extends Node>(heap: Heap<T>, node: T, idx: number) {
+  const length = heap.length;
+  const l_idx = 2 * idx + 1;
+  if (l_idx >= length) {
+    heap[idx] = node
+    return;
   }
-
-  /**
-   * Clear all elements from the heap
-   */
-  clear(): void {
-    this.heap = [];
+  const left = heap[l_idx];
+  const right = heap[l_idx + 1];
+  const min = compare(left, right)
+  if (node === compare(min, node)) {
+    heap[idx] = node;
+    return
   }
-
-  /**
-   * Convert the heap to an array
-   */
-  toArray(): T[] {
-    return [...this.heap];
+  heap[idx] = min;
+  if (left === min) {
+    siftDown(heap, node, l_idx)
+  } else {
+    siftDown(heap, node, l_idx + 1)
   }
+}
 
-  private bubbleUp(index: number): void {
-    while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
-      if (this.compare(this.heap[index], this.heap[parentIndex]) >= 0) break;
 
-      [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-      index = parentIndex;
-    }
+export function push<T extends Node>(heap: Heap<T>, node: T) {
+  heap.push(node);
+  siftUp(heap, node, heap.length - 1);
+}
+
+function siftUp<T extends Node>(heap: Heap<T>, node: T, idx: number) {
+  const return_idx = ((idx - 1) >> 1);
+  const return_node = heap[return_idx];
+  if (!return_node) {
+    heap[idx] = node;
+    return;
+  } else if (compare(node, return_node) === return_node) {
+    heap[idx] = node;
+    return
   }
+  heap[idx] = return_node;
+  siftUp(heap, node, return_idx)
+}
 
-  private bubbleDown(index: number): void {
-    while (true) {
-      const leftChildIndex = 2 * index + 1;
-      const rightChildIndex = 2 * index + 2;
-      let smallestIndex = index;
-
-      if (
-        leftChildIndex < this.size &&
-        this.compare(this.heap[leftChildIndex], this.heap[smallestIndex]) < 0
-      ) {
-        smallestIndex = leftChildIndex;
-      }
-
-      if (
-        rightChildIndex < this.size &&
-        this.compare(this.heap[rightChildIndex], this.heap[smallestIndex]) < 0
-      ) {
-        smallestIndex = rightChildIndex;
-      }
-
-      if (smallestIndex === index) break;
-
-      [this.heap[index], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[index]];
-      index = smallestIndex;
-    }
-  }
-} 

@@ -1,86 +1,141 @@
 import { describe, it, expect } from 'vitest'
-import { MinHeap } from '../src'
+import { push, pop, peek } from '../src'
 
 describe('MinHeap', () => {
-  describe('number heap', () => {
-    it('should maintain min heap property', () => {
-      const heap = new MinHeap<number>((a, b) => a - b)
-      
-      heap.insert(5)
-      heap.insert(3)
-      heap.insert(7)
-      heap.insert(1)
-      heap.insert(4)
+  describe('empty heap', () => {
+    it('should return null when peeking empty heap', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      expect(peek(heap)).toBeNull()
+    })
 
-      expect(heap.peek()).toBe(1)
-      expect(heap.size).toBe(5)
-      expect(heap.isEmpty).toBe(false)
+    it('should return null when popping empty heap', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      expect(pop(heap)).toBeNull()
+    })
+  })
+
+  describe('single element heap', () => {
+    it('should handle single element operations', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      const node = { id: 1, sortIndex: 5 }
+      
+      push(heap, node)
+      expect(peek(heap)).toBe(node)
+      expect(pop(heap)).toBe(node)
+      expect(heap.length).toBe(0)
+    })
+  })
+
+  describe('multiple elements heap', () => {
+    it('should maintain min heap property', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      
+      push(heap, { id: 1, sortIndex: 5 })
+      push(heap, { id: 2, sortIndex: 3 })
+      push(heap, { id: 3, sortIndex: 7 })
+      push(heap, { id: 4, sortIndex: 1 })
+      
+      expect(peek(heap)?.sortIndex).toBe(1)
+      expect(pop(heap)?.sortIndex).toBe(1)
+      expect(peek(heap)?.sortIndex).toBe(3)
     })
 
     it('should extract minimum elements in order', () => {
-      const heap = new MinHeap<number>((a, b) => a - b)
+      const heap: Array<{id: number, sortIndex: number}> = []
       
-      heap.insert(5)
-      heap.insert(3)
-      heap.insert(7)
-      heap.insert(1)
-      heap.insert(4)
+      push(heap, { id: 1, sortIndex: 5 })
+      push(heap, { id: 2, sortIndex: 3 })
+      push(heap, { id: 3, sortIndex: 7 })
+      push(heap, { id: 4, sortIndex: 1 })
+      push(heap, { id: 5, sortIndex: 4 })
 
-      expect(heap.extractMin()).toBe(1)
-      expect(heap.extractMin()).toBe(3)
-      expect(heap.extractMin()).toBe(4)
-      expect(heap.extractMin()).toBe(5)
-      expect(heap.extractMin()).toBe(7)
-      expect(heap.extractMin()).toBeUndefined()
-      expect(heap.isEmpty).toBe(true)
+      expect(pop(heap)?.sortIndex).toBe(1)
+      expect(pop(heap)?.sortIndex).toBe(3)
+      expect(pop(heap)?.sortIndex).toBe(4)
+      expect(pop(heap)?.sortIndex).toBe(5)
+      expect(pop(heap)?.sortIndex).toBe(7)
+      expect(pop(heap)).toBeNull()
     })
 
-    it('should clear all elements', () => {
-      const heap = new MinHeap<number>((a, b) => a - b)
+    it('should handle nodes with same sortIndex', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
       
-      heap.insert(5)
-      heap.insert(3)
-      heap.insert(7)
-
-      expect(heap.size).toBe(3)
-      heap.clear()
-      expect(heap.isEmpty).toBe(true)
+      push(heap, { id: 1, sortIndex: 5 })
+      push(heap, { id: 2, sortIndex: 5 })
+      push(heap, { id: 3, sortIndex: 5 })
+      
+      const first = pop(heap)
+      const second = pop(heap)
+      const third = pop(heap)
+      
+      expect(first?.sortIndex).toBe(5)
+      expect(second?.sortIndex).toBe(5)
+      expect(third?.sortIndex).toBe(5)
+      expect(pop(heap)).toBeNull()
     })
 
-    it('should convert to array', () => {
-      const heap = new MinHeap<number>((a, b) => a - b)
+    it('should handle large number of elements', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      const size = 1000
       
-      heap.insert(5)
-      heap.insert(3)
-      heap.insert(7)
-      heap.insert(1)
-      heap.insert(4)
+      // Insert elements in random order
+      for (let i = size - 1; i >= 0; i--) {
+        push(heap, { id: i, sortIndex: i })
+      }
+      
+      // Verify elements are extracted in ascending order
+      for (let i = 0; i < size; i++) {
+        const node = pop(heap)
+        expect(node?.sortIndex).toBe(i)
+      }
+      
+      expect(pop(heap)).toBeNull()
+    })
 
-      const array = heap.toArray()
-      expect(array).toHaveLength(5)
-      expect(array).toContain(1)
-      expect(array).toContain(3)
-      expect(array).toContain(4)
-      expect(array).toContain(5)
-      expect(array).toContain(7)
+    it('should handle ascending sequence', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      
+      for (let i = 0; i < 5; i++) {
+        push(heap, { id: i, sortIndex: i })
+      }
+      
+      for (let i = 0; i < 5; i++) {
+        expect(pop(heap)?.sortIndex).toBe(i)
+      }
+    })
+
+    it('should handle descending sequence', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      
+      for (let i = 4; i >= 0; i--) {
+        push(heap, { id: i, sortIndex: i })
+      }
+      
+      for (let i = 0; i < 5; i++) {
+        expect(pop(heap)?.sortIndex).toBe(i)
+      }
+    })
+
+    it('should maintain heap property after multiple operations', () => {
+      const heap: Array<{id: number, sortIndex: number}> = []
+      
+      // Push some elements
+      push(heap, { id: 1, sortIndex: 5 })
+      push(heap, { id: 2, sortIndex: 3 })
+      push(heap, { id: 3, sortIndex: 7 })
+      
+      // Pop minimum
+      expect(pop(heap)?.sortIndex).toBe(3)
+      
+      // Push more elements
+      push(heap, { id: 4, sortIndex: 2 })
+      push(heap, { id: 5, sortIndex: 4 })
+      
+      // Verify order
+      expect(pop(heap)?.sortIndex).toBe(2)
+      expect(pop(heap)?.sortIndex).toBe(4)
+      expect(pop(heap)?.sortIndex).toBe(5)
+      expect(pop(heap)?.sortIndex).toBe(7)
     })
   })
-
-  describe('object heap', () => {
-    interface Person {
-      name: string
-      age: number
-    }
-
-    it('should work with custom objects', () => {
-      const heap = new MinHeap<Person>((a, b) => a.age - b.age)
-      
-      heap.insert({ name: 'Alice', age: 30 })
-      heap.insert({ name: 'Bob', age: 25 })
-      heap.insert({ name: 'Charlie', age: 35 })
-
-      const youngest = heap.extractMin()
-      expect(youngest).toEqual({ name: 'Bob', age: 25 })
-    })
-  })
-}) 
+})

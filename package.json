@@ -1,6 +1,6 @@
 {
   "name": "@0bipinnata0/heap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A TypeScript implementation of a min heap data structure",
   "type": "module",
   "publishConfig": {
