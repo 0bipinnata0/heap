@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A TypeScript implementation of a min heap data structure",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
